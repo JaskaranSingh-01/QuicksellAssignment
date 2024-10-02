@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# Quicksell Frontend Assignment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This Kanban board application, built using React JS, allows users to manage and organize tickets effectively. It interacts with a RESTful API to fetch ticket data and provides dynamic grouping and sorting options to enhance user experience. The application is designed to be responsive and visually appealing.
 
-In the project directory, you can run:
+## API Endpoint
 
-### `npm start`
+The application communicates with the following API to fetch data:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **API URL**: [https://api.quicksell.co/v1/internal/frontend-assignment](https://api.quicksell.co/v1/internal/frontend-assignment)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### API Response Structure
 
-### `npm test`
+The API response contains the following fields:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **tickets**: An array of ticket objects.
+  - Each ticket object includes:
+    - `id`: Unique identifier for the ticket.
+    - `title`: Title of the ticket.
+    - `status`: Current status of the ticket (e.g., Backlog, Todo, In progress, Done, Canceled).
+    - `priority`: Priority level of the ticket (0 - No priority, 1 - Low, 2 - Medium, 3 - High, 4 - Urgent).
+    - `tag`: Array of tags associated with the ticket.
+- **users**: An array of user objects.
+  - Each user object includes:
+    - `id`: Unique identifier for the user.
+    - `name`: Name of the user.
+    - `available`: Availability status of the user.
 
-### `npm run build`
+## Application Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Grouping Options
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Users can group tickets in three distinct ways:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **By Status**: Tickets are organized based on their current status.
+2. **By User**: Tickets are arranged according to the assigned user.
+3. **By Priority**: Tickets are grouped according to their priority level.
 
-### `npm run eject`
+### Sorting Options
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Users can sort the displayed tickets in two ways:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Priority**: Tickets are sorted in descending order of priority.
+2. **Title**: Tickets are sorted in ascending order based on their title.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### User State Persistence
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The application saves the user's view state (grouping and ordering preferences) even after a page reload using `localStorage`.
 
-## Learn More
+## Design Requirements
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The Kanban board should be visually appealing and responsive. The design must not use any CSS frameworks (like Bootstrap, Tailwind, etc.) or libraries for styling. All styles must be written in pure CSS.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Assets
 
-### Code Splitting
+The assets for the project can be downloaded from the following link:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [Assets ZIP File](https://prod-files-secure.s3.us-west-2.amazonaws.com/867c6222-5e73-49fb-b21f-a276ba2d258b/76bcb3fe-d025-4ad4-9247-e38c2935b859/Untitled.zip)
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The project is structured as follows:
 
-### Making a Progressive Web App
+/kanban-board |-- /public | |-- index.html |-- /src | |-- /components | | |-- Header.js | | |-- Grid.js | | |-- Card.js | | |-- Loader.js | | |-- Dropdowns | | |-- DisplayDropdown.js | |-- /utils | | |-- helper.js | | |-- loadGrid.js | | |-- mapUsersByUserId.js | |-- App.js | |-- App.css | |-- index.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+bash
+Copy code
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Setup Instructions
 
-### Deployment
+1. **Clone the Repository**: 
+   Clone the repository to your local machine using the following command:
+   ```bash
+     git clone <repository-url>
+   ```
+2. **Navigate to the Project Directory**:
+   ```bash
+     cd kanban-board
+   ```
+3. **Install Dependencies**: If you are using any packages, ensure they are installed. Use the command:
+   ```bash
+     npm install
+   ```
+4. **Run the Application**: Start the application with:
+   ```bash
+     npm start
+   ```
+5. **Open the Application**: Open your browser and navigate to ```http://localhost:3000``` to view the application.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Code Snippets
+```javascript
+useEffect(() => {
+    fetch(GET_TICKETS_URL)
+        .then(resp => {
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            return resp.json();
+        })
+        .then(res => {
+            const { tickets, users } = res;
+            setTickets(tickets);
+            setUserData(mapUsersByUserId(users));
+        })
+        .catch(err => console.error('Error fetching data:', err));
+}, []);
+```
 
-### `npm run build` fails to minify
+Example: Grouping Tickets
+```javascript
+const loadGrid = (tickets, grouping, ordering) => {
+    // Logic to group tickets based on the selected criteria
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+Example: User Preferences in Local Storage
+```javascript
+const saveSettings = useCallback((data) => {
+    for (let key in data) localStorage.setItem(key, data[key]);
+}, []);
+
+```
+## Conclusion
+
+This README serves as a comprehensive overview of the Kanban board application developed using React JS. The application enables users to efficiently manage and organize tickets, offering dynamic grouping and sorting functionalities. It is designed to be visually appealing and responsive, adhering to the requirement of using only pure CSS for styling, without reliance on external libraries or frameworks.
+
+For any further inquiries or clarifications, please feel free to reach out.
+
